@@ -1,0 +1,82 @@
+-- 1. Menampilkan hak akses user dengan SHOW GRANTS
+-- 1.1 Semua host
+SHOW GRANTS FOR 'praktikum12'@'%';
+
+-- 1.2 Jika user terdaftar di localhost
+SHOW GRANTS FOR 'praktikum12'@'localhost';
+
+
+
+-- 2. Menampilkan hak akses level GLOBAL (mysql.user)
+SELECT Host, User,
+       Select_priv, Insert_priv, Update_priv, Delete_priv,
+       Create_priv, Drop_priv, Reload_priv, Shutdown_priv,
+       Grant_priv, References_priv, Index_priv, Alter_priv,
+       Create_tmp_table_priv, Lock_tables_priv, Create_view_priv,
+       Show_view_priv, Create_routine_priv, Alter_routine_priv,
+       Execute_priv, Event_priv, Trigger_priv,
+       ssl_type, ssl_cipher, x509_issuer, x509_subject,
+       max_questions, max_updates, max_connections
+FROM mysql.user
+WHERE User = 'praktikum12';
+
+
+
+-- 3. Menampilkan hak akses level DATABASE (mysql.db)
+SELECT Host, Db, User,
+       Select_priv, Insert_priv, Update_priv, Delete_priv,
+       Create_priv, Drop_priv, Grant_priv, References_priv,
+       Index_priv, Alter_priv
+FROM mysql.db
+WHERE User = 'praktikum12';
+
+
+
+-- 4. Menampilkan hak akses level HOST (mysql.host)
+SELECT Host, Db, Select_priv, Update_priv, Insert_priv, Delete_priv
+FROM mysql.host
+WHERE Host LIKE '%';
+
+
+
+-- 5. Menampilkan hak akses level TABEL (mysql.tables_priv)
+SELECT Host, Db, User, Table_name, Table_priv, Column_priv
+FROM mysql.tables_priv
+WHERE User = 'praktikum12';
+
+
+
+-- 6. Menampilkan hak akses level KOLOM (mysql.columns_priv)
+SELECT Host, Db, User, Table_name, Column_name, Column_priv
+FROM mysql.columns_priv
+WHERE User = 'praktikum12';
+
+
+
+-- 7. Menyimpan output laporan (opsional)
+-- 7.1 Mulai simpan output
+tee /tmp/hak_akses_praktikum12.txt;
+
+-- 7.2 Menjalankan semua perintah penting untuk laporan
+SHOW GRANTS FOR 'praktikum12'@'%';
+SELECT * FROM mysql.user WHERE User='praktikum12';
+SELECT * FROM mysql.db WHERE User='praktikum12';
+SELECT * FROM mysql.tables_priv WHERE User='praktikum12';
+SELECT * FROM mysql.columns_priv WHERE User='praktikum12';
+
+-- 7.3 Stop penyimpanan
+notee;
+
+
+
+-- 8. Contoh GRANT / REVOKE
+-- GRANT SELECT, UPDATE ON namaDB.* TO 'praktikum12'@'%' IDENTIFIED BY 'password';
+-- REVOKE SELECT, UPDATE ON namaDB.* FROM 'praktikum12'@'%';
+-- DROP USER 'praktikum12'@'%';
+
+Kesimpulan: 
+Dalam praktikum ini dilakukan pemeriksaan lengkap hak akses user praktikum12 melalui SHOW GRANTS 
+serta tabel-tabel grant MySQL (mysql.user, mysql.db, mysql.tables_priv, dan mysql.columns_priv). 
+MySQL menggunakan sistem keamanan berlapis, sehingga privilege diperiksa mulai dari level global, database, tabel, hingga kolom. 
+Berdasarkan perintah yang dijalankan, seluruh hak akses user dapat diidentifikasi secara menyeluruh sehingga memastikan konfigurasi keamanan sudah tepat, tidak berlebihan, dan sesuai kebutuhan praktikum. 
+Proses ini membantu memvalidasi keamanan database serta memastikan user bekerja dengan hak akses yang benar.
